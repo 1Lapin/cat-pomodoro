@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>喵喵番茄钟 - 专注每一分钟</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="cat-decoration top-left">🐾</div>
+      <div class="cat-decoration top-right">🐾</div>
+
+      <header>
+        <h1>喵喵番茄钟</h1>
+        <p class="subtitle">让可爱的小猫陪你一起专注</p>
+      </header>
+
+      <main class="timer-card rest">
+            <div class="status-badge" id="status" style="background: rgb(250, 208, 196);">休息中...</div>
+
+        <div class="cat-avatar-container">
+          <div class="cat-avatar" id="cat-avatar">
+            <!-- 这里可以用CSS画一只猫或者放一个GIF -->
+            <div class="cat-ears"></div>
+            <div class="cat-face">
+              <div class="cat-eyes">
+                <div class="eye"></div>
+                <div class="eye"></div>
+              </div>
+              <div class="cat-nose"></div>
+              <div class="cat-mouth"></div>
+              <div class="cat-whiskers"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timer-display" id="timer">25:00</div>
+
+        <div class="controls">
+          <button id="start-btn" class="btn primary">开始专注</button>
+          <button id="pause-btn" class="btn secondary" disabled>暂停</button>
+          <button id="reset-btn" class="btn tertiary">重置</button>
+        </div>
+
+        <div class="noise-controls">
+                <p>白噪音设置</p>
+                <div class="volume-control">
+                    <span>🔈</span>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+                    <span>🔊</span>
+                </div>
+                <div class="noise-options">
+            <button class="noise-btn" data-noise="none">无</button>
+            <button class="noise-btn" data-noise="rain">下雨声</button>
+            <button class="noise-btn" data-noise="purr">呼噜声</button>
+            <button class="noise-btn" data-noise="forest">森林声</button>
+          </div>
+        </div>
+      </main>
+
+      <div id="reward-modal" class="modal hidden">
+        <div class="modal-content">
+          <h2>太棒了喵！</h2>
+          <p>你完成了一个番茄钟，这是给你的小奖励：</p>
+          <div class="reward-img-container">
+            <img id="reward-img" src="" alt="奖励猫咪图片" />
+          </div>
+          <button id="close-reward" class="btn primary">休息一下</button>
+        </div>
+      </div>
+
+      <footer>
+        <p>© 2026 喵喵番茄钟 | 专注与陪伴</p>
+      </footer>
+    </div>
+
+    <audio id="noise-audio" loop></audio>
+    <audio
+      id="alert-audio"
+      src="https://assets.mixkit.co/active_storage/sfx/1364/1364-preview.mp3"
+    ></audio>
+
+    <script src="script.js"></script>
+  </body>
+</html>
