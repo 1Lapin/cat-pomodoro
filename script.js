@@ -19,6 +19,11 @@ const rewardModal = document.getElementById('reward-modal');
 const rewardImg = document.getElementById('reward-img');
 const closeRewardBtn = document.getElementById('close-reward');
 const volumeSlider = document.getElementById('volume-slider');
+const muteBtn = document.getElementById('mute-btn');
+
+// 音量变量
+let lastVolume = 0.5;
+let isMuted = false;
 
 // 更稳定的白噪音链接 (Mixkit)
 const noiseSources = {
@@ -36,7 +41,38 @@ alertAudio.volume = 0.7;
 volumeSlider.oninput = (e) => {
     const vol = e.target.value;
     noiseAudio.volume = vol;
+    lastVolume = vol;
+    
+    // 如果在静音状态下调节音量，自动取消静音
+    if (vol > 0 && isMuted) {
+        toggleMute(false);
+    } else if (vol == 0 && !isMuted) {
+        toggleMute(true);
+    }
 };
+
+// 静音功能
+function toggleMute(forceMute = null) {
+    isMuted = forceMute !== null ? forceMute : !isMuted;
+    
+    if (isMuted) {
+        noiseAudio.muted = true;
+        alertAudio.muted = true;
+        muteBtn.textContent = '🔇';
+        muteBtn.classList.add('muted');
+        volumeSlider.value = 0;
+    } else {
+        noiseAudio.muted = false;
+        alertAudio.muted = false;
+        muteBtn.textContent = '🔊';
+        muteBtn.classList.remove('muted');
+        // 恢复到静音前的音量，如果之前就是0，则恢复到默认0.5
+        volumeSlider.value = lastVolume > 0 ? lastVolume : 0.5;
+        noiseAudio.volume = volumeSlider.value;
+    }
+}
+
+muteBtn.onclick = () => toggleMute();
 
 // 更新计时器显示
 function updateDisplay() {
@@ -183,16 +219,29 @@ noiseBtns.forEach(btn => {
     };
 });
 
-// 添加空格键控制：按空格开始/暂停
+// 添加键盘控制
 document.addEventListener('keydown', (e) => {
-    // 只有当没有弹出奖励窗口时才响应空格
-    if (e.code === 'Space' && rewardModal.classList.contains('hidden')) {
+    // 只有当没有弹出奖励窗口时才响应快捷键
+    if (!rewardModal.classList.contains('hidden')) return;
+
+    // 空格键：开始/暂停
+    if (e.code === 'Space') {
         e.preventDefault(); // 防止空格键导致页面滚动
         if (timerId) {
             pauseTimer();
         } else {
             startTimer();
         }
+    }
+    
+    // R 键：重置
+    if (e.key.toLowerCase() === 'r') {
+        resetTimer();
+    }
+    
+    // M 键：静音切换 (可选添加)
+    if (e.key.toLowerCase() === 'm') {
+        toggleMute();
     }
 });
 
