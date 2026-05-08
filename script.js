@@ -20,8 +20,16 @@ const rewardImg = document.getElementById('reward-img');
 const closeRewardBtn = document.getElementById('close-reward');
 const volumeSlider = document.getElementById('volume-slider');
 const muteBtn = document.getElementById('mute-btn');
+const fishTotalDisplay = document.getElementById('fish-total');
+const historyModal = document.getElementById('history-modal');
+const historyList = document.getElementById('history-list');
+const viewHistoryBtn = document.getElementById('view-history');
+const closeHistoryBtn = document.getElementById('close-history');
 
-// 音量变量
+// 数据变量
+let fishCount = parseInt(localStorage.getItem('fishCount')) || 0;
+let focusHistory = JSON.parse(localStorage.getItem('focusHistory')) || [];
+let isResting = false;
 let lastVolume = 0.5;
 let isMuted = false;
 
@@ -87,14 +95,28 @@ function updateDisplay() {
 function startTimer() {
     if (timerId) return;
     
+    // 如果是在休息结束后的状态，重置为工作时间
+    if (!isWorking && timeLeft <= 0) {
+        isWorking = true;
+        timeLeft = 25 * 60;
+    }
+
     startBtn.disabled = true;
     pauseBtn.disabled = false;
     
     // 更新 UI 状态
     timerCard.classList.add('focus');
     timerCard.classList.remove('rest');
-    statusBadge.textContent = '工作中...';
-    statusBadge.style.background = '#ff9a9e';
+    
+    if (isWorking) {
+        statusBadge.textContent = '工作中...';
+        statusBadge.style.background = '#ff9a9e';
+        startBtn.textContent = '正在专注...';
+    } else {
+        statusBadge.textContent = '休息中...';
+        statusBadge.style.background = '#fad0c4';
+        startBtn.textContent = '正在休息...';
+    }
     
     startTime = Date.now();
     const initialTimeLeft = timeLeft;
@@ -109,7 +131,7 @@ function startTimer() {
             timerId = null;
             handleSessionComplete();
         }
-    }, 100); // 更加频繁地检查以保证平滑
+    }, 100);
 }
 
 // 暂停计时
@@ -122,8 +144,14 @@ function pauseTimer() {
     // 更新 UI 状态
     timerCard.classList.remove('focus');
     timerCard.classList.add('rest');
-    statusBadge.textContent = '休息中...';
-    statusBadge.style.background = '#fad0c4';
+    
+    if (isWorking) {
+        statusBadge.textContent = '已暂停';
+        startBtn.textContent = '继续专注';
+    } else {
+        statusBadge.textContent = '休息中...';
+        startBtn.textContent = '继续休息';
+    }
 }
 
 // 重置计时器
@@ -131,6 +159,9 @@ function resetTimer() {
     pauseTimer();
     isWorking = true;
     timeLeft = 25 * 60;
+    startBtn.textContent = '开始专注';
+    statusBadge.textContent = '休息中...';
+    statusBadge.style.background = '#fad0c4';
     updateDisplay();
 }
 
@@ -138,27 +169,72 @@ function resetTimer() {
 function handleSessionComplete() {
     alertAudio.play();
     
-    // 停止计时，进入休息状态
-    timerCard.classList.remove('focus');
-    timerCard.classList.add('rest');
-    statusBadge.textContent = '休息中...';
-    statusBadge.style.background = '#fad0c4';
-
     if (isWorking) {
-        // 工作结束，给奖励并休息
+        // 工作结束，记录奖励
+        addFish();
         showReward();
+        
+        // 自动进入 1 分钟倒计时
         isWorking = false;
-        timeLeft = 1 * 60; // 1分钟休息
+        timeLeft = 1 * 60;
+        statusBadge.textContent = '开始休息喵！';
+        
+        // 休息时间自动开始
+        setTimeout(() => {
+            startTimer();
+        }, 1000); // 稍微延迟一下，让用户看清楚状态
     } else {
-        // 休息结束，回到工作
+        // 休息结束，回到待命状态
         isWorking = true;
         timeLeft = 25 * 60;
+        startBtn.textContent = '开始专注';
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+        statusBadge.textContent = '休息结束喵！';
+        timerCard.classList.remove('focus');
+        timerCard.classList.add('rest');
         alert('休息结束，开始新的专注吧！');
     }
     
     updateDisplay();
-    startBtn.disabled = false;
-    pauseBtn.disabled = true;
+}
+
+// 小鱼干系统
+function addFish() {
+    fishCount++;
+    localStorage.setItem('fishCount', fishCount);
+    updateFishDisplay();
+    
+    // 记录历史
+    const record = {
+        date: new Date().toLocaleString(),
+        type: '番茄钟完成'
+    };
+    focusHistory.unshift(record);
+    localStorage.setItem('focusHistory', JSON.stringify(focusHistory.slice(0, 50))); // 只保留最近50条
+}
+
+function updateFishDisplay() {
+    fishTotalDisplay.textContent = fishCount;
+}
+
+// 历史记录弹窗
+function showHistory() {
+    historyList.innerHTML = '';
+    if (focusHistory.length === 0) {
+        historyList.innerHTML = '<p class="empty-msg">还没有记录喵，开始第一个番茄钟吧！</p>';
+    } else {
+        focusHistory.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `
+                <span>${item.type} 🐟</span>
+                <span class="history-date">${item.date}</span>
+            `;
+            historyList.appendChild(div);
+        });
+    }
+    historyModal.classList.remove('hidden');
 }
 
 // 显示奖励
@@ -182,6 +258,9 @@ async function showReward() {
 closeRewardBtn.onclick = () => {
     rewardModal.classList.add('hidden');
 };
+
+viewHistoryBtn.onclick = showHistory;
+closeHistoryBtn.onclick = () => historyModal.classList.add('hidden');
 
 // 白噪音切换
 noiseBtns.forEach(btn => {
@@ -252,4 +331,5 @@ resetBtn.onclick = resetTimer;
 timerCard.classList.add('rest');
 statusBadge.textContent = '休息中...';
 statusBadge.style.background = '#fad0c4';
+updateFishDisplay();
 updateDisplay();

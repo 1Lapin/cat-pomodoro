@@ -12,9 +12,13 @@
       <div class="cat-decoration top-right">🐾</div>
 
       <header>
-        <h1>喵喵番茄钟</h1>
-        <p class="subtitle">让可爱的小猫陪你一起专注</p>
-      </header>
+            <h1>喵喵番茄钟</h1>
+            <p class="subtitle">让可爱的小猫陪你一起专注</p>
+            <div class="user-stats">
+                <span class="fish-count">🐟 x <span id="fish-total">0</span></span>
+                <button id="view-history" class="icon-btn">📜 记录</button>
+            </div>
+        </header>
 
       <main class="timer-card rest">
             <div class="status-badge" id="status" style="background: rgb(250, 208, 196);">休息中...</div>
@@ -59,15 +63,26 @@
       </main>
 
       <div id="reward-modal" class="modal hidden">
-        <div class="modal-content">
-          <h2>太棒了喵！</h2>
-          <p>你完成了一个番茄钟，这是给你的小奖励：</p>
-          <div class="reward-img-container">
-            <img id="reward-img" src="" alt="奖励猫咪图片" />
-          </div>
-          <button id="close-reward" class="btn primary">休息一下</button>
+            <div class="modal-content">
+                <h2>太棒了喵！获得小鱼干 🐟</h2>
+                <p>你完成了一个番茄钟，这是给你的小奖励：</p>
+                <div class="reward-img-container">
+                    <img id="reward-img" src="" alt="奖励猫咪图片">
+                </div>
+                <button id="close-reward" class="btn primary">开始休息</button>
+            </div>
         </div>
-      </div>
+
+        <div id="history-modal" class="modal hidden">
+            <div class="modal-content history-content">
+                <h2>🐾 专注记录</h2>
+                <div id="history-list" class="history-list">
+                    <!-- 历史记录将通过 JS 动态插入 -->
+                    <p class="empty-msg">还没有记录喵，开始第一个番茄钟吧！</p>
+                </div>
+                <button id="close-history" class="btn tertiary">关闭</button>
+            </div>
+        </div>
 
       <footer>
         <p>© 2026 喵喵番茄钟 | 专注与陪伴</p>

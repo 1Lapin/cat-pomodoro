@@ -49,6 +49,39 @@ header h1 {
     margin-bottom: 5px;
 }
 
+.user-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.fish-count {
+    background: var(--white);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #ff858a;
+    box-shadow: var(--shadow);
+}
+
+.icon-btn {
+    background: none;
+    border: 1px solid var(--secondary-color);
+    padding: 5px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background: var(--secondary-color);
+    color: white;
+}
+
 .subtitle {
     font-size: 1rem;
     color: #a0a0a0;
@@ -362,6 +395,42 @@ header h1 {
     width: 90%;
     text-align: center;
     animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.history-content {
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-list {
+    margin: 20px 0;
+    overflow-y: auto;
+    text-align: left;
+    max-height: 300px;
+    padding-right: 10px;
+}
+
+.history-item {
+    background: #fffafa;
+    padding: 10px 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid var(--primary-color);
+}
+
+.history-date {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.empty-msg {
+    color: #ccc;
+    font-style: italic;
+    text-align: center;
 }
 
 @keyframes popIn {
