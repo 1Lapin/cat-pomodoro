@@ -15,6 +15,10 @@
             <h1>喵喵番茄钟</h1>
             <p class="subtitle">让可爱的小猫陪你一起专注</p>
             <div class="user-stats">
+                <div id="user-profile-trigger" class="user-profile-mini">
+                    <img id="user-avatar-mini" src="https://via.placeholder.com/30" alt="头像" class="avatar-mini">
+                    <span id="user-name-mini">未登录</span>
+                </div>
                 <span class="fish-count">🐟 x <span id="fish-total">0</span></span>
                 <button id="view-history" class="icon-btn">📜 记录</button>
             </div>
@@ -53,7 +57,44 @@
         </div>
       </main>
 
-      <div id="reward-modal" class="modal hidden">
+      <div id="login-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>🐾 喵喵账号登录</h2>
+                <p>请输入手机号进入你的猫咪世界</p>
+                <div class="form-group">
+                    <input type="tel" id="phone-input" placeholder="请输入手机号" maxlength="11">
+                </div>
+                <button id="login-submit" class="btn primary">进入世界</button>
+            </div>
+        </div>
+
+        <div id="profile-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>👤 个人资料</h2>
+                <div class="profile-edit-area">
+                    <div class="avatar-upload">
+                        <img id="profile-avatar-preview" src="https://via.placeholder.com/100" alt="头像预览">
+                        <input type="file" id="avatar-file-input" accept="image/*" hidden>
+                        <button id="avatar-upload-btn" class="btn secondary small">更换头像</button>
+                    </div>
+                    <div class="form-group">
+                        <label>昵称</label>
+                        <input type="text" id="username-input" placeholder="输入你的名字">
+                    </div>
+                    <div class="form-group">
+                        <label>手机号</label>
+                        <input type="text" id="user-phone-display" disabled>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button id="save-profile" class="btn primary">保存修改</button>
+                    <button id="logout-btn" class="btn tertiary">退出登录</button>
+                    <button id="close-profile" class="btn secondary">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="reward-modal" class="modal hidden">
             <div class="modal-content">
                 <h2>太棒了喵！获得小鱼干 🐟</h2>
                 <p>你完成了一个番茄钟，这是给你的小奖励：</p>

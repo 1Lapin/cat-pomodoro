@@ -53,8 +53,43 @@ header h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.user-profile-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--white);
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 0.2s;
+}
+
+.user-profile-mini:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+}
+
+.avatar-mini {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--secondary-color);
+}
+
+#user-name-mini {
+    font-size: 0.85rem;
+    font-weight: bold;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .fish-count {
@@ -325,6 +360,64 @@ header h1 {
     color: #ccc;
     font-style: italic;
     text-align: center;
+}
+
+/* 账号相关样式 */
+.form-group {
+    margin: 15px 0;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-color);
+}
+
+.form-group input:disabled {
+    background: #f9f9f9;
+    color: #ccc;
+}
+
+.avatar-upload {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+#profile-avatar-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.btn.small {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 @keyframes popIn {

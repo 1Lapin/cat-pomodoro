@@ -27,9 +27,27 @@ const historyList = document.getElementById('history-list');
 const viewHistoryBtn = document.getElementById('view-history');
 const closeHistoryBtn = document.getElementById('close-history');
 
+// 账号相关 DOM
+const loginModal = document.getElementById('login-modal');
+const phoneInput = document.getElementById('phone-input');
+const loginSubmit = document.getElementById('login-submit');
+const profileModal = document.getElementById('profile-modal');
+const userProfileTrigger = document.getElementById('user-profile-trigger');
+const userAvatarMini = document.getElementById('user-avatar-mini');
+const userNameMini = document.getElementById('user-name-mini');
+const profileAvatarPreview = document.getElementById('profile-avatar-preview');
+const avatarFileInput = document.getElementById('avatar-file-input');
+const avatarUploadBtn = document.getElementById('avatar-upload-btn');
+const usernameInput = document.getElementById('username-input');
+const userPhoneDisplay = document.getElementById('user-phone-display');
+const saveProfileBtn = document.getElementById('save-profile');
+const logoutBtn = document.getElementById('logout-btn');
+const closeProfileBtn = document.getElementById('close-profile');
+
 // 数据变量
-let fishCount = parseInt(localStorage.getItem('fishCount')) || 0;
-let focusHistory = JSON.parse(localStorage.getItem('focusHistory')) || [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+let fishCount = 0;
+let focusHistory = [];
 let isResting = false;
 let lastVolume = 0.5;
 let isMuted = false;
@@ -206,10 +224,115 @@ function handleSessionComplete() {
     updateDisplay();
 }
 
+// 账号系统逻辑
+function initAccount() {
+    if (!currentUser) {
+        loginModal.classList.remove('hidden');
+    } else {
+        loadUserData();
+    }
+}
+
+function loadUserData() {
+    // 根据手机号加载对应用户的数据
+    const userData = JSON.parse(localStorage.getItem(`user_${currentUser.phone}`)) || {
+        fishCount: 0,
+        focusHistory: [],
+        name: `喵友_${currentUser.phone.slice(-4)}`,
+        avatar: 'https://via.placeholder.com/100'
+    };
+    
+    fishCount = userData.fishCount;
+    focusHistory = userData.focusHistory;
+    currentUser.name = userData.name;
+    currentUser.avatar = userData.avatar;
+    
+    updateFishDisplay();
+    updateProfileUI();
+}
+
+function updateProfileUI() {
+    userNameMini.textContent = currentUser.name;
+    userAvatarMini.src = currentUser.avatar;
+    profileAvatarPreview.src = currentUser.avatar;
+    usernameInput.value = currentUser.name;
+    userPhoneDisplay.value = currentUser.phone;
+}
+
+function saveUserData() {
+    if (!currentUser) return;
+    const userData = {
+        fishCount: fishCount,
+        focusHistory: focusHistory,
+        name: currentUser.name,
+        avatar: currentUser.avatar
+    };
+    localStorage.setItem(`user_${currentUser.phone}`, JSON.stringify(userData));
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+}
+
+// 登录
+loginSubmit.onclick = () => {
+    const phone = phoneInput.value.trim();
+    if (!/^1[3-9]\d{9}$/.test(phone)) {
+        alert('请输入正确的11位手机号喵！');
+        return;
+    }
+    
+    currentUser = { phone: phone };
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    loginModal.classList.add('hidden');
+    loadUserData();
+};
+
+// 退出
+logoutBtn.onclick = () => {
+    if (confirm('确定要退出登录吗喵？')) {
+        saveUserData();
+        localStorage.removeItem('currentUser');
+        location.reload(); // 刷新页面回到登录态
+    }
+};
+
+// 编辑资料
+userProfileTrigger.onclick = () => {
+    if (!currentUser) {
+        loginModal.classList.remove('hidden');
+    } else {
+        profileModal.classList.remove('hidden');
+    }
+};
+
+closeProfileBtn.onclick = () => profileModal.classList.add('hidden');
+
+// 头像上传
+avatarUploadBtn.onclick = () => avatarFileInput.click();
+
+avatarFileInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64Img = event.target.result;
+            profileAvatarPreview.src = base64Img;
+            currentUser.avatar = base64Img;
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+// 保存资料
+saveProfileBtn.onclick = () => {
+    currentUser.name = usernameInput.value.trim() || `喵友_${currentUser.phone.slice(-4)}`;
+    saveUserData();
+    updateProfileUI();
+    profileModal.classList.add('hidden');
+    alert('资料保存成功喵！');
+};
+
 // 小鱼干系统
 function addFish() {
     fishCount++;
-    localStorage.setItem('fishCount', fishCount);
     updateFishDisplay();
     
     // 记录历史
@@ -218,7 +341,9 @@ function addFish() {
         type: '番茄钟完成'
     };
     focusHistory.unshift(record);
-    localStorage.setItem('focusHistory', JSON.stringify(focusHistory.slice(0, 50))); // 只保留最近50条
+    if (focusHistory.length > 50) focusHistory = focusHistory.slice(0, 50);
+    
+    saveUserData(); // 每次获得鱼干都保存
 }
 
 function updateFishDisplay() {
@@ -339,5 +464,5 @@ timerCard.classList.add('rest');
 mainCatImg.src = 'assets/cat-rest.png'; // 初始显示休息图
 statusBadge.textContent = '休息中...';
 statusBadge.style.background = '#fad0c4';
-updateFishDisplay();
+initAccount();
 updateDisplay();
