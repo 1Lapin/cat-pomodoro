@@ -261,14 +261,26 @@ function updateProfileUI() {
 
 function saveUserData() {
     if (!currentUser) return;
+    
+    // 如果头像数据太大（Base64），移动端 localStorage 可能会存不下
+    // 这里简单处理：如果超过 1MB 则提醒
     const userData = {
         fishCount: fishCount,
         focusHistory: focusHistory,
         name: currentUser.name,
         avatar: currentUser.avatar
     };
-    localStorage.setItem(`user_${currentUser.phone}`, JSON.stringify(userData));
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    
+    try {
+        localStorage.setItem(`user_${currentUser.phone}`, JSON.stringify(userData));
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+            alert('图片太大了喵，换一个小一点的头像试试吧！');
+        } else {
+            alert('保存失败了喵，请稍后再试');
+        }
+    }
 }
 
 // 登录
@@ -322,13 +334,25 @@ avatarFileInput.onchange = (e) => {
 };
 
 // 保存资料
-saveProfileBtn.onclick = () => {
-    currentUser.name = usernameInput.value.trim() || `喵友_${currentUser.phone.slice(-4)}`;
+saveProfileBtn.addEventListener('click', () => {
+    const newName = usernameInput.value.trim();
+    currentUser.name = newName || `喵友_${currentUser.phone.slice(-4)}`;
     saveUserData();
     updateProfileUI();
     profileModal.classList.add('hidden');
     alert('资料保存成功喵！');
-};
+});
+
+// 兼容移动端的点击事件
+const buttons = document.querySelectorAll('.btn, .icon-btn, .user-profile-mini, .noise-btn');
+buttons.forEach(btn => {
+    btn.addEventListener('touchstart', function() {
+        this.style.opacity = '0.7';
+    }, {passive: true});
+    btn.addEventListener('touchend', function() {
+        this.style.opacity = '1';
+    }, {passive: true});
+});
 
 // 小鱼干系统
 function addFish() {
