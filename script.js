@@ -12,6 +12,7 @@ const pauseBtn = document.getElementById('pause-btn');
 const resetBtn = document.getElementById('reset-btn');
 const statusBadge = document.getElementById('status');
 const timerCard = document.querySelector('.timer-card');
+const mainCatImg = document.getElementById('main-cat-img');
 const noiseBtns = document.querySelectorAll('.noise-btn');
 const noiseAudio = document.getElementById('noise-audio');
 const alertAudio = document.getElementById('alert-audio');
@@ -112,10 +113,12 @@ function startTimer() {
         statusBadge.textContent = '工作中...';
         statusBadge.style.background = '#ff9a9e';
         startBtn.textContent = '正在专注...';
+        mainCatImg.src = 'assets/cat-work.png'; // 切换为专注图片
     } else {
         statusBadge.textContent = '休息中...';
         statusBadge.style.background = '#fad0c4';
         startBtn.textContent = '正在休息...';
+        mainCatImg.src = 'assets/cat-rest.png'; // 切换为休息图片
     }
     
     startTime = Date.now();
@@ -144,6 +147,7 @@ function pauseTimer() {
     // 更新 UI 状态
     timerCard.classList.remove('focus');
     timerCard.classList.add('rest');
+    mainCatImg.src = 'assets/cat-rest.png'; // 暂停时显示休息图
     
     if (isWorking) {
         statusBadge.textContent = '已暂停';
@@ -162,6 +166,7 @@ function resetTimer() {
     startBtn.textContent = '开始专注';
     statusBadge.textContent = '休息中...';
     statusBadge.style.background = '#fad0c4';
+    mainCatImg.src = 'assets/cat-rest.png'; // 重置显示休息图
     updateDisplay();
 }
 
@@ -178,6 +183,7 @@ function handleSessionComplete() {
         isWorking = false;
         timeLeft = 1 * 60;
         statusBadge.textContent = '开始休息喵！';
+        mainCatImg.src = 'assets/cat-rest.png'; // 切换为休息图
         
         // 休息时间自动开始
         setTimeout(() => {
@@ -193,6 +199,7 @@ function handleSessionComplete() {
         statusBadge.textContent = '休息结束喵！';
         timerCard.classList.remove('focus');
         timerCard.classList.add('rest');
+        mainCatImg.src = 'assets/cat-rest.png'; // 保持休息图直到下次开始
         alert('休息结束，开始新的专注吧！');
     }
     
@@ -329,6 +336,7 @@ startBtn.onclick = startTimer;
 pauseBtn.onclick = pauseTimer;
 resetBtn.onclick = resetTimer;
 timerCard.classList.add('rest');
+mainCatImg.src = 'assets/cat-rest.png'; // 初始显示休息图
 statusBadge.textContent = '休息中...';
 statusBadge.style.background = '#fad0c4';
 updateFishDisplay();

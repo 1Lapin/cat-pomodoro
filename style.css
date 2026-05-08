@@ -125,138 +125,32 @@ header h1 {
     background: #fdfdfd;
     border-radius: 50%;
     border: 3px solid var(--secondary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
-.cat-ears::before, .cat-ears::after {
-    content: '';
-    position: absolute;
-    top: -10px;
-    width: 30px;
-    height: 30px;
-    background: var(--secondary-color);
-    border-radius: 5px;
-    z-index: -1;
-}
-
-.cat-ears::before { left: 10px; transform: rotate(-15deg); }
-.cat-ears::after { right: 10px; transform: rotate(15deg); }
-
-.cat-face {
-    position: relative;
+.main-cat-img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
 }
 
-.cat-eyes {
-    display: flex;
-    justify-content: space-around;
-    padding-top: 40px;
-    width: 60%;
-    margin: 0 auto;
+/* 专注状态：图片可以稍微缩小或加滤镜 */
+.timer-card.focus .main-cat-img {
+    transform: scale(1.05);
 }
 
-.eye {
-    width: 12px;
-    height: 12px;
-    background: #333;
-    border-radius: 50%;
-    transition: height 0.2s;
-    animation: blink 4s infinite;
+/* 休息状态：图片呼吸动画 */
+.timer-card.rest .main-cat-img {
+    animation: catBreath 3s infinite ease-in-out;
 }
 
-@keyframes blink {
-    0%, 90%, 100% { height: 12px; }
-    95% { height: 2px; }
-}
-
-.cat-nose {
-    width: 8px;
-    height: 6px;
-    background: #ffb3b3;
-    border-radius: 50%;
-    margin: 10px auto 0;
-    transition: transform 0.3s;
-}
-
-.cat-avatar:hover .cat-nose {
-    transform: scale(1.2);
-}
-
-.cat-whiskers {
-    position: absolute;
-    top: 60px;
-    width: 100%;
-}
-
-.cat-whiskers::before, .cat-whiskers::after {
-    content: '';
-    position: absolute;
-    width: 30px;
-    height: 1px;
-    background: #eee;
-}
-
-.cat-whiskers::before {
-    left: -10px;
-    box-shadow: 0 8px 0 #eee, 0 16px 0 #eee;
-    transform: rotate(10deg);
-}
-
-.cat-whiskers::after {
-    right: -10px;
-    box-shadow: 0 8px 0 #eee, 0 16px 0 #eee;
-    transform: rotate(-10deg);
-}
-
-.cat-mouth {
-    width: 24px;
-    height: 10px;
-    position: relative;
-    margin: 2px auto 0;
-}
-
-.cat-mouth::before, .cat-mouth::after {
-    content: '';
-    position: absolute;
-    width: 12px;
-    height: 8px;
-    border: 2px solid #ffb3b3;
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-}
-
-.cat-mouth::before { left: 0; }
-.cat-mouth::after { right: 0; }
-
-/* 专注状态：眯起眼睛 */
-.timer-card.focus .eye {
-    height: 4px;
-    margin-top: 6px;
-    animation: none; /* 专注时不眨眼 */
-}
-
-/* 休息状态：圆圆的眼睛或者闭眼 */
-.timer-card.rest .eye {
-    height: 2px;
-    margin-top: 8px;
-    border-radius: 10px 10px 0 0;
-    background: transparent;
-    border-bottom: 2px solid #333;
-    animation: none;
-}
-
-.timer-card.rest .cat-mouth::before, .timer-card.rest .cat-mouth::after {
-    border-color: #ff858a;
-    height: 10px; /* 笑得更开心 */
-}
-
-.timer-card.rest .cat-face {
-    animation: bob 2s infinite ease-in-out;
-}
-
-@keyframes bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+@keyframes catBreath {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.95); }
 }
 
 .timer-display {
